@@ -1,0 +1,47 @@
+version: 2.1
+orbs:
+  docker: circleci/docker@1.0.0
+jobs:
+  production-build-and-push:
+    executor: docker/docker
+    resource_class: small
+    steps:
+      - setup_remote_docker
+      - checkout
+      - docker/check
+      - docker/build:
+          image: $DOCKER_ORG/$DOCKER_REPO
+          tag: "$CIRCLE_SHA1,$CIRCLE_TAG,latest"
+      - docker/push:
+          image: $DOCKER_ORG/$DOCKER_REPO
+          tag: "$CIRCLE_SHA1,$CIRCLE_TAG,latest"
+  development-build-and-push:
+    executor: docker/docker
+    resource_class: small
+    steps:
+      - setup_remote_docker
+      - checkout
+      - docker/check
+      - docker/build:
+          image: $DOCKER_ORG/$DOCKER_REPO
+          tag: "$CIRCLE_SHA1,$CIRCLE_BRANCH"
+      - docker/push:
+          image: $DOCKER_ORG/$DOCKER_REPO
+          tag: "$CIRCLE_SHA1,$CIRCLE_BRANCH"
+
+workflows:
+  version: 2
+  release:
+    jobs:
+      - production-build-and-push:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+  commit:
+    jobs:
+      - development-build-and-push:
+          filters:
+            branches:
+              ignore: master

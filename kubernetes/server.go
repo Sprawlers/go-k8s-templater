@@ -14,9 +14,9 @@ type Server struct {
     cors        *cors.Cors
 }
 
-func newServer(clientset *kubernetes.Clientset) &Server {
-    options = cors.Options{
-        AllowedMethods: []string{"GET", "POST"}
+func newServer(clientset *kubernetes.Clientset) *Server {
+    options := cors.Options{
+        AllowedMethods: []string{"GET", "POST"},
     }
     return &Server{clientset, httprouter.New(), cors.New(options)}
 }
