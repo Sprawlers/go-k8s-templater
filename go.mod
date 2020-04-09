@@ -1,4 +1,4 @@
-module github.com/Sprawlers/k8s-templater
+module github.com/Sprawlers/git-k8s-auto-deploy
 
 go 1.14
 

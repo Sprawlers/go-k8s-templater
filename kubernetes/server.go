@@ -15,13 +15,14 @@ type Server struct {
 }
 
 func newServer(clientset *kubernetes.Clientset) *Server {
+    s := &Server{clientset, httprouter.New(), cors.New(options)}
+    s.routes()
     options := cors.Options{
         AllowedMethods: []string{"GET", "POST"},
     }
-    return &Server{clientset, httprouter.New(), cors.New(options)}
+    return &s
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    s.routes()
     s.cors.ServeHTTP(w, r, s.router.ServeHTTP)
 }
