@@ -37,15 +37,18 @@ func (s *Server) handleWebhook() httprouter.Handle {
         var webhook Webhook
         if err := decodeBody(r, &webhook); err != nil {
             respondErr(w, r, http.StatusBadRequest, "failed to read webhook from the request")
+            return
         }
         webhook.log()
         cb, err := json.Marshal(&CallbackBody{})
         if err != nil {
             respondErr(w, r, http.StatusInternalServerError, "failed to create validation callback body")
+            return
         }
         resp, err := http.Post(webhook.CallbackURL, "application/json", bytes.NewBuffer(cb))
         if err != nil {
             respondErr(w, r, http.StatusBadRequest, "failed to validate webhook origin")
+            return
         }
         defer resp.Body.Close()
         respond(w, r, http.StatusOK, nil)
