@@ -2,7 +2,6 @@ package main
 
 import (
     "net/http"
-    "log"
 
     metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -15,13 +14,10 @@ func (s *Server) handleHealtCheck() http.HandlerFunc {
 
 func (s *Server) handleTest() http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        pods, err := s.clientset.CoreV1().Pods("production").List(metav1.ListOptions{})
+        _, err := s.clientset.CoreV1().Pods("production").List(metav1.ListOptions{})
         if err != nil {
             respondErr(w, r, http.StatusInternalServerError, err)
             return
         }
-        log.Println(len(pods.Items))
-        respond(w, r, http.StatusOK, struct{number int `json:"number"`}{len(pods.Items)})
-        return
     }
 }
