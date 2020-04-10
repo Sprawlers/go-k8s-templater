@@ -20,7 +20,7 @@ func (s *Server) handleTest() http.HandlerFunc {
             respondErr(w, r, http.StatusInternalServerError, err)
             return
         }
-
+        log.Println(len(pods.Items))
         respond(w, r, http.StatusOK, struct{number int `json:"number"`}{len(pods.Items)})
         return
     }
