@@ -2,6 +2,7 @@ package main
 
 import (
     "net/http"
+    "log"
 
     metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -19,7 +20,8 @@ func (s *Server) handleTest() http.HandlerFunc {
             respondErr(w, r, http.StatusInternalServerError, err)
             return
         }
-        respond(w, r, http.StatusOK, struct{numbers int}{len(pods.Items)})
+
+        respond(w, r, http.StatusOK, struct{number int `json:"number"`}{len(pods.Items)})
         return
     }
 }
