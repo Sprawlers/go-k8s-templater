@@ -51,6 +51,7 @@ func (s *Server) handleWebhook() httprouter.Handle {
             return
         }
         defer resp.Body.Close()
+        s.createPods()
         respond(w, r, http.StatusOK, nil)
         log.Println("Successfully validate the request")
     }
