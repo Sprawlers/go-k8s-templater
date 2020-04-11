@@ -5,5 +5,5 @@ import (
 )
 
 func (s *Server) createPods() {
-    log.Println("Craeting pods")
+    log.Println("Craeting pods...")
 }
