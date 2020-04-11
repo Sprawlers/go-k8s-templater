@@ -13,23 +13,23 @@ import (
 type CallbackBody struct{}
 
 type Webhook struct {
-    CallbackURL string      `json="callback_url"`
-    PushData    PushData    `json="push_data"`
-    Repository  Repository  `json="repository"`
+    CallbackURL string      `json:"callback_url"`
+    PushData    PushData    `json:"push_data"`
+    Repository  Repository  `json:"repository"`
 }
 
 type PushData struct {
-    Images      []string    `json="images"`
-    Pusher      string      `json="pusher"`
-    Tag         string      `json="tag"`
+    Images      []string    `json:"images"`
+    Pusher      string      `json:"pusher"`
+    Tag         string      `json:"tag"`
 }
 
 type Repository struct {
-    Name        string      `json="name"`
-    Namespace   string      `json="namespace"`
-    Owner       string      `json="owner"`
-    RepoName    string      `json="repo_name"`
-    RepoURL     string      `json="repo_url"`
+    Name        string      `json:"name"`
+    Namespace   string      `json:"namespace"`
+    Owner       string      `json:"owner"`
+    RepoName    string      `json:"repo_name"`
+    RepoURL     string      `json:"repo_url"`
 }
 
 func (s *Server) handleWebhook() httprouter.Handle {
