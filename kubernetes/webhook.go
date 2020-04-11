@@ -13,9 +13,9 @@ import (
 type CallbackBody struct{}
 
 type Webhook struct {
-    CallbackURL string      `json="callback_uri"`
+    CallbackURL string      `json="callback_url"`
     PushData    PushData    `json="push_data"`
-    Repositary  Repositary  `json="repositary"`
+    Repository  Repositary  `json="repository"`
 }
 
 type PushData struct {
@@ -24,7 +24,7 @@ type PushData struct {
     Tag         string      `json="tag"`
 }
 
-type Repositary struct {
+type Repository struct {
     Name        string      `json="name"`
     Namespace   string      `json="namespace"`
     Owner       string      `json="owner"`
@@ -35,11 +35,12 @@ type Repositary struct {
 func (s *Server) handleWebhook() httprouter.Handle {
     return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
         var webhook Webhook
-        if err := decodeBody(r, &webhook); err != nil {
+        if err := json.NewDecoder(r.Body).Decode(&webhook); err != nil {
             respondErr(w, r, http.StatusBadRequest, "failed to read webhook from the request")
             return
         }
-        webhook.log()
+        defer r.Body.Close()
+        webhook.logs()
         cb, err := json.Marshal(&CallbackBody{})
         if err != nil {
             respondErr(w, r, http.StatusInternalServerError, "failed to create validation callback body")
@@ -57,7 +58,9 @@ func (s *Server) handleWebhook() httprouter.Handle {
     }
 }
 
-func (w Webhook) log() {
+func (w Webhook) logs() {
+    log.Println("-------------------------")
+    log.Println(w.CallbackURL)
     log.Println("Callback: " + w.CallbackURL)
     for index, image := range w.PushData.Images {
         log.Println("Images[" + strconv.Itoa(index) + "]: " + image)
