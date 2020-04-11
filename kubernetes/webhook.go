@@ -15,7 +15,7 @@ type CallbackBody struct{}
 type Webhook struct {
     CallbackURL string      `json="callback_url"`
     PushData    PushData    `json="push_data"`
-    Repository  Repositary  `json="repository"`
+    Repository  Repository  `json="repository"`
 }
 
 type PushData struct {
@@ -67,9 +67,9 @@ func (w Webhook) logs() {
     }
     log.Println("Pusher: " + w.PushData.Pusher)
     log.Println("Tag: " + w.PushData.Tag)
-    log.Println("Name: " + w.Repositary.Name)
-    log.Println("Namespace: " + w.Repositary.Namespace)
-    log.Println("Owner: " + w.Repositary.Owner)
-    log.Println("RepoName: " + w.Repositary.RepoName)
-    log.Println("RepoURL: " + w.Repositary.RepoURL)
+    log.Println("Name: " + w.Repository.Name)
+    log.Println("Namespace: " + w.Repository.Namespace)
+    log.Println("Owner: " + w.Repository.Owner)
+    log.Println("RepoName: " + w.Repository.RepoName)
+    log.Println("RepoURL: " + w.Repository.RepoURL)
 }
