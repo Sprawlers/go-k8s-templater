@@ -41,6 +41,10 @@ func (s *Server) handleWebhook() httprouter.Handle {
         }
         defer r.Body.Close()
         webhook.logs()
+        newImage := webhook.imageFromWebhook()
+        if len(newImage.Tag) < 40 {
+            return 
+        }
         cb, err := json.Marshal(&CallbackBody{})
         if err != nil {
             respondErr(w, r, http.StatusInternalServerError, "failed to create validation callback body")
@@ -52,16 +56,18 @@ func (s *Server) handleWebhook() httprouter.Handle {
             return
         }
         defer resp.Body.Close()
-        s.createPods()
+        result, err := s.updatePod("dev", webhook.imageFromWebhook())
+        if err != nil {
+            respondErr(w, r, http.StatusInternalServerError, "failed to update the coressponding deployment")
+            return
+        }
+        log.Println("Updated deployment %q.", result.GetObjectMeta().GetName())
         respond(w, r, http.StatusOK, nil)
-        log.Println("Successfully validate the request")
     }
 }
 
 func (w Webhook) logs() {
     log.Println("-------------------------")
-    log.Println(w.CallbackURL)
-    log.Println("Callback: " + w.CallbackURL)
     for index, image := range w.PushData.Images {
         log.Println("Images[" + strconv.Itoa(index) + "]: " + image)
     }
